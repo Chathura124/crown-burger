@@ -1,121 +1,178 @@
-# CROWN BURGER — Animated E-commerce Mini Project
 
-An original, dark-and-orange burger storefront inspired by the **visual direction** of the supplied CROWN BURGER reference video (bold black hero, prominent stacked burger, dramatic typography). Includes locally bundled photorealistic burger assets (adapted from an original generated visual design concept), photo-layer ingredient-assembly scroll effect, floating/zooming rotating hero burger, menu, cart, checkout, secured admin login, database CRUD, and order workflow.
+# 🍔 CROWN BURGER
 
-## Requirements
+### A Modern Burger Ordering & Product Management Platform
 
-- Windows, macOS or Linux
-- Node.js **20 or newer** with npm
-- Local MongoDB Community Server (running) **or** a MongoDB Atlas connection URI
-- A browser; Internet access for Google Fonts and GSAP CDN (website/cart still work without them; GSAP hero motion gracefully falls back)
-- VS Code recommended, optional
+CROWN BURGER is a full-stack e-commerce web application designed to deliver an engaging online burger ordering experience.
 
-## Start locally (Windows / VS Code)
+The platform combines a visually appealing storefront, interactive scroll animations, product browsing, shopping cart functionality, and a streamlined checkout process.
 
-1. Extract the project ZIP.
-2. Open `crown-burger` folder in VS Code.
-3. Install Node.js LTS and MongoDB Community Server. Check in VS Code terminal:
+A dedicated administrative dashboard enables efficient product and order management.
 
-   ```powershell
-   node -v
-   npm -v
-   ```
+## ✨ Key Features
 
-4. Copy `.env.example` to `.env` (Windows PowerShell: `Copy-Item .env.example .env`) and **change ADMIN_PASSWORD and JWT_SECRET**. `JWT_SECRET` must be at least 32 characters; choose a long random value. Do **not** commit `.env`.
-5. Verify MongoDB is running. On Windows, check **Services → MongoDB Server → Running** (or connect using MongoDB Compass to `mongodb://127.0.0.1:27017`).
-6. From project root, run:
+### Customer Experience
+- Modern, responsive user interface
+- Cinematic burger visuals and scroll animations
+- Interactive product catalogue
+- Product categories and filtering
+- Product search and price sorting
+- Detailed product descriptions and pricing
+- Shopping cart with quantity management
+- Cash on Delivery checkout
+- Order information stored in MongoDB
 
-   ```powershell
-   npm install
-   npm run seed
-   npm start
-   ```
+### Admin Dashboard
+- Admin authentication using JWT
+- Create new products
+- View and search existing products
+- Update product information
+- Delete products with confirmation
+- Manage product prices and stock levels
+- View customer orders
+- Input validation and error handling
 
-7. Open **http://localhost:3000** for the store, and **http://localhost:3000/admin** for Admin Studio. Use `ADMIN_EMAIL` and `ADMIN_PASSWORD` from `.env`.
-8. To stop, press `Ctrl+C`. Next time, run `npm start` (no need to seed again).
+## 🛠 Technology Stack
 
-If PowerShell blocks npm.ps1, use the VS Code terminal profile **Command Prompt**, or execute `npm.cmd install`, `npm.cmd run seed`, `npm.cmd start`. Do not change execution policy just for this project.
+| Layer | Technology |
+|---|---|
+| Frontend | HTML5, CSS3, JavaScript |
+| Backend | Node.js, Express.js |
+| Database | MongoDB |
+| ODM | Mongoose |
+| Authentication | JSON Web Tokens (JWT) |
+| Animations | GSAP, ScrollTrigger |
+| Development | Visual Studio Code |
+| Version Control | Git & GitHub |
 
-## How to use
+## 🏗 System Architecture
 
-- **Customer:** filter or search burgers, sort by price, add to bag, adjust quantity, checkout with name/email/phone/address. Checkout accepts **Cash on Delivery** for a demo; NO actual payment gateway or courier integration is included. The backend independently calculates trusted prices and reserves inventory.
-- **Admin:** login → Product Management → CREATE, READ, UPDATE and DELETE burgers, edit price/description/stock/availability/image and category → Orders tab → change order status. Cancelled orders restore stock; delivered orders cannot be cancelled.
-- **Animation:** scroll the homepage to watch the hero burger float, turn and shrink, followed by the ingredient deconstruction scene which gradually assembles from six layers. GSAP ScrollTrigger handles hero scroll; native scroll-position logic drives the SVG ingredient layers. Respects reduced motion preference for GSAP portions.
-- **Images:** Locally bundled JPG burger photos work offline, including hero, product images and combination promotional artwork. Sides and drinks currently use bundled vector illustrations. New products may use a custom HTTPS image URL. Photo assets were cropped from the AI-generated design concept and are illustrative rather than verified real menu photography.
+The application follows a client-server architecture.
 
-## Folder structure
-
-```
-crown-burger/
-├── .env.example
-├── package.json
-├── README.md
-├── public/
-│   ├── index.html / style.css / app.js
-│   ├── admin.html / admin.css / admin.js
-│   └── assets/hero-burger.jpg, burger-1.jpg ... burger-4.jpg, layer-1.png ... layer-6.png, SVG illustrations
-├── scripts/seed.js
-└── src/server.js
-```
-
-## REST API
-
-| Route | Method | Purpose | Auth |
-|---|---|---|---|
-| `/api/health` | GET | Connectivity | No |
-| `/api/products` | GET | Menu + category/search/sort | No |
-| `/api/products/:id` | GET | Product details JSON | No |
-| `/api/auth/login` | POST | Admin JWT login | No |
-| `/api/admin/products` | GET | All products, including hidden | Admin |
-| `/api/admin/products` | POST | Create product | Admin |
-| `/api/admin/products/:id` | PUT | Edit product | Admin |
-| `/api/admin/products/:id` | DELETE | Delete product | Admin |
-| `/api/orders` | POST | Create cash-on-delivery order | No |
-| `/api/admin/orders` | GET | List orders | Admin |
-| `/api/admin/orders/:id` | PATCH | Update order status | Admin |
-
-## Data model / ERD
-
-```mermaid
-erDiagram
-  PRODUCT ||--o{ ORDER_ITEM : ordered_as
-  ORDER ||--|{ ORDER_ITEM : includes
-  PRODUCT { ObjectId _id PK; string name; string category; string description; number price; number stock; boolean isAvailable; boolean isFeatured; string image; string theme }
-  ORDER { ObjectId _id PK; object customer; number subtotal; number deliveryFee; number total; string status; date createdAt }
-  ORDER_ITEM { ObjectId product FK; string name; number quantity; number unitPrice; number subtotal }
+```text
+Customer / Admin
+       |
+       v
+Frontend (HTML, CSS, JavaScript)
+       |
+       v
+REST API (Node.js + Express)
+       |
+       v
+MongoDB Database
+       |
+       +-- Products
+       |
+       +-- Orders
 ```
 
-Orders embed order items in a MongoDB `orders` document; products live in the `products` collection. Customer contact/delivery info is embedded on orders. For academic demonstration, admin credentials are configured in `.env` and JWT sessions expire after three hours.
+## 📸 Application Interfaces
 
-## Evaluation rubric coverage (EC4307, 30 points)
+The platform includes:
 
-- Create / Read / Update / Delete: admin product form and management table (4+4+4+4)
-- Client-side HTML form constraints and server-side schema/input validation; error messages (2)
-- MongoDB products and orders design, IDs and relationships (4)
-- Responsive storefront, animation, consistent admin experience (2)
-- Separate organized frontend/backend/scripts, version control friendly (2)
-- This README, ERD, setup guide; capture your own screenshots (2)
-- Record your own demonstration of at most 5 minutes with camera on (2)
+- Animated homepage
+- Burger product catalogue
+- Shopping cart and checkout
+- Admin login
+- Product management dashboard
+- Product creation and editing forms
+- Customer order management
 
-**Important:** The supplied rubric says academic integrity checks apply to AI-generated content and code similarity. Understand, adapt, test and explain your submission; follow your instructor's AI disclosure rules.
+## ⚙️ Installation & Setup
 
-## Suggested 5-minute demonstration
+### Prerequisites
 
-1. 0:00–0:45: Show homepage scroll animations and responsive layout.
-2. 0:45–1:30: Menu filters, search, sorting and customer bag.
-3. 1:30–2:00: Complete demo Cash on Delivery checkout; inspect order.
-4. 2:00–4:15: Admin login → Create product → view/search → edit → delete; demonstrate database persistence on reload.
-5. 4:15–5:00: Orders status, validation, MongoDB Compass collections, ERD.
+Ensure the following are installed:
 
-## Known limits / next improvements
+- Node.js and npm
+- MongoDB Community Server
+- Git
 
-- Burger visuals are photographic-style crops of the generated reference concept; sides/drinks use vector art. For genuinely accurate food photographs, replace them with photographs of your actual menu items. Scroll ingredient animation is a 2D image-layer illusion rather than a true 3D model.
-- Orders have no user accounts, payment processing, notifications or shipment tracking.
-- This is a **coursework/demo baseline**, not a production commerce deployment. For production, add CSRF protections where relevant, verified image hosts and CSP, database transactions for multi-item order stock reservations, HTTPS, role management, persistent sessions, stronger admin account storage, logs, tests and payment-provider integration.
-- MongoDB must be running for seeded storefront products; the UI shows a retry message otherwise.
+### 1. Clone the Repository
 
-## 2026 premium design refresh
+```bash
+git clone https://github.com/Chathura124/crown-burger.git
+cd crown-burger
+```
 
-The storefront uses a photographic-style burger hero, dark charcoal background, glowing orange buttons, Manrope headings, realistic-looking menu photos, a combo banner and CSS image-layer scroll assembly. The supplied illustration assets remain available as fallbacks for sides and drinks. The design screenshot was used as visual source artwork, not copied from a commercial template.
+### 2. Install Dependencies
 
-**Testing note:** JS syntax checks were performed. A working MongoDB service and end-to-end checkout/admin browser flow were not available for testing in this execution environment. Test `/api/health`, seed, CRUD and checkout on your PC before submitting.
+```bash
+npm install
+```
+
+### 3. Configure Environment Variables
+
+Create a `.env` file using `.env.example` as a template.
+
+Configure:
+
+```env
+PORT=3000
+MONGODB_URI=mongodb://127.0.0.1:27017/crown_burger
+JWT_SECRET=replace_with_your_own_secure_random_secret
+ADMIN_EMAIL=admin@example.local
+ADMIN_PASSWORD=replace_with_your_own_strong_password
+```
+
+Never commit `.env` or share your credentials.
+
+### 4. Seed Sample Products
+
+Make sure MongoDB is running.
+
+```bash
+npm run seed
+```
+
+### 5. Start the Application
+
+```bash
+npm start
+```
+
+Open the application:
+
+**Customer Website:** http://localhost:3000
+
+**Admin Dashboard:** http://localhost:3000/admin
+
+## 🗄 Database
+
+MongoDB stores application data in two primary collections.
+
+**Products:** Product name, category, description, price, stock, availability and image information.
+
+**Orders:** Customer information, purchased items, pricing, payment method and order status.
+
+The application supports persistent data storage and full CRUD operations for product management.
+
+## 🔒 Security & Validation
+
+- JWT-based administrator authentication
+- Protected administrative API operations
+- Client-side form validation
+- Server-side data validation
+- Environment-based configuration
+- Sensitive credentials excluded from version control
+
+## 🚀 Future Enhancements
+
+- Online payment gateway integration
+- Customer accounts and order history
+- Real-time order tracking
+- Product reviews and ratings
+- Cloud deployment
+- Email notifications
+
+## 👨‍💻 Developer
+
+**Madushan S.C**  
+Computer Engineering Undergraduate  
+Faculty of Engineering, University of Ruhuna
+
+**GitHub:** https://github.com/Chathura124
+
+## 📄 Project Information
+
+Developed as a mini project for **EC4307 – Web Application Development**, University of Ruhuna.
